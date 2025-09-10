@@ -1,0 +1,32 @@
+aws ssm put-parameter \
+    --name /semaphore-agents/registration-token \
+    --value "123" \
+    --type SecureString
+
+
+aws iam create-policy \
+    --policy-name agent-aws-stack-cfn-execution-policy \
+    --policy-document file://$(pwd)/execution-policy.json \
+    --description "Cloudformation policy to deploy the agent-aws-stack"
+
+SEMAPHORE_AGENT_STACK_CONFIG=config.json \
+    npm run bootstrap -- aws://310299448958/eu-west-2 \
+    --cloudformation-execution-policies arn:aws:iam::310299448958:policy/agent-aws-stack-cfn-execution-policy
+
+SEMAPHORE_AGENT_STACK_CONFIG=config.json npm run deploy
+
+
+
+
+aws s3api create-bucket \
+--region eu-west-2 \
+--bucket semaphore-cache
+
+aws s3api put-bucket-tagging \
+--bucket semaphore-cache \
+--tagging 'TagSet=[{Key=environment,Value=semaphore},{Key=application,Value=nourish-organisations}]'
+
+aws s3api put-public-access-block \
+--bucket semaphore-cache \
+--public-access-block-configuration \
+BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true

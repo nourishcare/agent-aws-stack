@@ -1,0 +1,8 @@
+{
+  "SEMAPHORE_AGENT_STACK_NAME": "semaphore-agent-aws-stack-linux",
+  "SEMAPHORE_ORGANIZATION": "nourishcare",
+  "SEMAPHORE_AGENT_TOKEN_PARAMETER_NAME": "/semaphore-agents/registration-token",
+  "SEMAPHORE_AGENT_USE_DYNAMIC_SCALING": "true",
+  "SEMAPHORE_AGENT_DISCONNECT_AFTER_JOB": "false",
+  "SEMAPHORE_AGENT_ASG_MAX_SIZE": "5"
+}

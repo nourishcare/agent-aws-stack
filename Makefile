@@ -1,4 +1,4 @@
-AWS_REGION=us-east-1
+AWS_REGION=eu-west-2
 AMI_ARCH=x86_64
 AMI_PREFIX=semaphore-agent
 AMI_INSTANCE_TYPE=t2.micro
