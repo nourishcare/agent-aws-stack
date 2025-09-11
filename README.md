@@ -13,21 +13,6 @@ This project is a CDK application used to deploy a fleet of Semaphore agents in 
 
 Check out the [docs](https://docs.semaphoreci.com/ci-cd-environment/aws-support).
 
-# Semaphore agent AWS stack
-
-This project is a CDK application used to deploy a fleet of Semaphore agents in your AWS account.
-
-## Features
-
-- Run self-hosted agents in Linux and Windows machines
-- Dynamically increase and decrease the number of agents available based on your job demand
-- Deploy multiple stacks of agents, one for each self-hosted agent type
-- Access the agent EC2 instances through SSH or using AWS Systems Manager Session Manager
-- Use an S3 bucket to cache the dependencies needed for your jobs
-- Control the size of your agent instances and of your agent pool
-
-Check out the [docs](https://docs.semaphoreci.com/ci-cd-environment/aws-support).
-
 ## Extending the Linux AMI with additional tools (Ruby via rbenv, PostGIS, Redis, Node.js)
 
 The Linux AMI build can optionally install the following developer tools. Use Makefile flags to enable them when validating/building with Packer:
@@ -53,7 +38,7 @@ Examples:
   make packer.validate PACKER_OS=linux INSTALL_POSTGIS=true INSTALL_REDIS=true
 
 - Validate with custom versions:
-  make packer.validate PACKER_OS=linux INSTALL_RUBY=true RUBY_VERSION=3.2.4 INSTALL_POSTGIS=true POSTGRES_VERSION=14
+  make packer.validate PACKER_OS=linux INSTALL_RUBY=true RUBY_VERSION=3.2.4 INSTALL_POSTGIS=true POSTGRES_VERSION=14 POSTGIS_VERSION=3
 
 - Build with all components:
   make packer.build PACKER_OS=linux INSTALL_RUBY=true INSTALL_POSTGIS=true INSTALL_REDIS=true INSTALL_NODE=true
