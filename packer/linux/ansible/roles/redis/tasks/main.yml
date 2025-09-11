@@ -1,0 +1,21 @@
+---
+- name: Add Redis PPA
+  when: install_redis | default(false) | bool
+  ansible.builtin.apt_repository:
+    repo: ppa:redislabs/redis
+    state: present
+    update_cache: true
+
+- name: Install Redis server from RedisLabs PPA
+  when: install_redis | default(false) | bool
+  ansible.builtin.apt:
+    pkg:
+      - redis-server
+    update_cache: true
+
+- name: Enable and start Redis
+  when: install_redis | default(false) | bool
+  ansible.builtin.service:
+    name: redis-server
+    state: started
+    enabled: true
