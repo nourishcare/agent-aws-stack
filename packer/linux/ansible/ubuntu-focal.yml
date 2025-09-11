@@ -9,14 +9,14 @@
     - upgrade
     - system_tools
     - python
-    - users
     - erlang
+    - awscli
+    - cloudwatch_agent
+    - docker
+    - users
+    - agent
+    - cleanup
     - ruby
     - postgis
     - redis
     - node
-    - awscli
-    - cloudwatch_agent
-    - docker
-    - agent
-    - cleanup
