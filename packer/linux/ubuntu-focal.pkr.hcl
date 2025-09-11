@@ -61,6 +61,10 @@ variable "ruby_version" {
   default = "3.3.7"
 }
 
+variable "postgis_major_version" {
+  type    = string
+  default = "3"
+}
 variable "postgres_major_version" {
   type    = string
   default = "16"
