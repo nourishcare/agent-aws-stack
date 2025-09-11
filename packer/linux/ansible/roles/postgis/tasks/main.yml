@@ -35,3 +35,17 @@
     name: postgresql
     state: started
     enabled: true
+
+- name: Check PostgreSQL and PostGIS installation
+  when: install_postgis | default(false) | bool
+  ansible.builtin.shell: |
+    pg_config --version
+    psql --version
+    systemctl status postgresql
+  register: postgres_version_check
+  changed_when: false
+
+- name: Display PostgreSQL version
+  when: install_postgis | default(false) | bool
+  ansible.builtin.debug:
+    var: postgres_version_check.stdout_lines

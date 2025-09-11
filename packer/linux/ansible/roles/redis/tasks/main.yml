@@ -19,3 +19,17 @@
     name: redis-server
     state: started
     enabled: true
+
+- name: Check Redis installation
+  when: install_redis | default(false) | bool
+  ansible.builtin.shell: |
+    redis-server --version
+    redis-cli --version
+    systemctl status redis-server
+  register: redis_version_check
+  changed_when: false
+
+- name: Display Redis version
+  when: install_redis | default(false) | bool
+  ansible.builtin.debug:
+    var: redis_version_check.stdout_lines
