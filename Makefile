@@ -6,6 +6,14 @@ AGENT_VERSION=v2.2.16
 TOOLBOX_VERSION=v1.20.5
 PACKER_OS=linux
 INSTALL_ERLANG=true
+INSTALL_RUBY=false
+INSTALL_POSTGIS=false
+INSTALL_REDIS=false
+INSTALL_NODE=false
+# Defaults and versions
+RUBY_VERSION=3.3.7
+POSTGRES_VERSION=14
+NODE_VERSION=20
 SYSTEMD_RESTART_SECONDS=1800
 VERSION=$(shell cat package.json | jq -r '.version')
 HASH=$(shell find Makefile packer/$(PACKER_OS) -type f -exec md5sum "{}" + | awk '{print $$1}' | sort | md5sum | awk '{print $$1}')
@@ -60,6 +68,13 @@ packer.validate.linux:
 			-var "ami_prefix=$(AMI_PREFIX)" \
 			-var "arch=$(AMI_ARCH)" \
 			-var "install_erlang=$(INSTALL_ERLANG)" \
+			-var "install_ruby=$(INSTALL_RUBY)" \
+			-var "install_postgis=$(INSTALL_POSTGIS)" \
+			-var "install_redis=$(INSTALL_REDIS)" \
+			-var "install_node=$(INSTALL_NODE)" \
+			-var "ruby_version=$(RUBY_VERSION)" \
+			-var "postgres_major_version=$(POSTGRES_VERSION)" \
+			-var "node_major_version=$(NODE_VERSION)" \
 			-var "systemd_restart_seconds=$(SYSTEMD_RESTART_SECONDS)" \
 			-var "instance_type=$(AMI_INSTANCE_TYPE)" \
 			.'
@@ -117,6 +132,13 @@ packer.build.linux:
 			-var "ami_prefix=$(AMI_PREFIX)" \
 			-var "arch=$(AMI_ARCH)" \
 			-var "install_erlang=$(INSTALL_ERLANG)" \
+			-var "install_ruby=$(INSTALL_RUBY)" \
+			-var "install_postgis=$(INSTALL_POSTGIS)" \
+			-var "install_redis=$(INSTALL_REDIS)" \
+			-var "install_node=$(INSTALL_NODE)" \
+			-var "ruby_version=$(RUBY_VERSION)" \
+			-var "postgres_major_version=$(POSTGRES_VERSION)" \
+			-var "node_major_version=$(NODE_VERSION)" \
 			-var "systemd_restart_seconds=$(SYSTEMD_RESTART_SECONDS)" \
 			-var "instance_type=$(AMI_INSTANCE_TYPE)" \
 			.'
