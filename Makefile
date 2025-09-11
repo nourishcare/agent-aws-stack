@@ -12,7 +12,8 @@ INSTALL_REDIS=false
 INSTALL_NODE=false
 # Defaults and versions
 RUBY_VERSION=3.3.7
-POSTGRES_VERSION=14
+POSTGRES_VERSION=16
+POSTGIS_VERSION=3
 NODE_VERSION=20
 SYSTEMD_RESTART_SECONDS=1800
 VERSION=$(shell cat package.json | jq -r '.version')
@@ -74,6 +75,7 @@ packer.validate.linux:
 			-var "install_node=$(INSTALL_NODE)" \
 			-var "ruby_version=$(RUBY_VERSION)" \
 			-var "postgres_major_version=$(POSTGRES_VERSION)" \
+			-var "postgis_major_version=$(POSTGIS_VERSION)" \
 			-var "node_major_version=$(NODE_VERSION)" \
 			-var "systemd_restart_seconds=$(SYSTEMD_RESTART_SECONDS)" \
 			-var "instance_type=$(AMI_INSTANCE_TYPE)" \
@@ -138,6 +140,7 @@ packer.build.linux:
 			-var "install_node=$(INSTALL_NODE)" \
 			-var "ruby_version=$(RUBY_VERSION)" \
 			-var "postgres_major_version=$(POSTGRES_VERSION)" \
+			-var "postgis_major_version=$(POSTGIS_VERSION)" \
 			-var "node_major_version=$(NODE_VERSION)" \
 			-var "systemd_restart_seconds=$(SYSTEMD_RESTART_SECONDS)" \
 			-var "instance_type=$(AMI_INSTANCE_TYPE)" \
