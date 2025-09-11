@@ -25,7 +25,7 @@
   ansible.builtin.shell: |
     redis-server --version
     redis-cli --version
-    systemctl status redis-server
+    systemctl is-active redis-server || true
   register: redis_version_check
   changed_when: false
 

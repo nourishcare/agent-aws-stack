@@ -30,8 +30,7 @@
 - name: Enable corepack (yarn/pnpm shims)
   when: install_node | default(false) | bool
   ansible.builtin.command: corepack enable
-  args:
-    creates: /usr/local/bin/corepack
+  changed_when: false
 
 - name: Ensure /usr/local/bin and /usr/local/sbin are in PATH for all users
   when: install_node | default(false) | bool
