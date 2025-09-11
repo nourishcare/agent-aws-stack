@@ -36,6 +36,41 @@ variable "install_erlang" {
   default = "true"
 }
 
+variable "install_ruby" {
+  type    = string
+  default = "false"
+}
+
+variable "install_postgis" {
+  type    = string
+  default = "false"
+}
+
+variable "install_redis" {
+  type    = string
+  default = "false"
+}
+
+variable "install_node" {
+  type    = string
+  default = "false"
+}
+
+variable "ruby_version" {
+  type    = string
+  default = "3.3.7"
+}
+
+variable "postgres_major_version" {
+  type    = string
+  default = "16"
+}
+
+variable "node_major_version" {
+  type    = string
+  default = "20"
+}
+
 variable "systemd_restart_seconds" {
   type    = string
   default = "1800"
@@ -96,6 +131,14 @@ build {
       "-e agent_version=${var.agent_version}",
       "-e toolbox_version=${var.toolbox_version}",
       "-e install_erlang=${var.install_erlang}",
+      "-e install_ruby=${var.install_ruby}",
+      "-e install_postgis=${var.install_postgis}",
+      "-e install_redis=${var.install_redis}",
+      "-e install_node=${var.install_node}",
+      "-e ruby_version=${var.ruby_version}",
+      "-e postgres_major_version=${var.postgres_major_version}",
+      "-e postgis_major_version=${var.postgis_major_version}",
+      "-e node_major_version=${var.node_major_version}",
       "-e systemd_restart_seconds=${var.systemd_restart_seconds}",
     ]
   }
