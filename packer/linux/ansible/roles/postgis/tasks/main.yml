@@ -1,0 +1,37 @@
+---
+- name: Add PGDG apt key (for PostgreSQL/PostGIS)
+  when: install_postgis | default(false) | bool
+  ansible.builtin.get_url:
+    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+    dest: /usr/share/keyrings/postgresql.asc
+    mode: '0644'
+
+- name: Add PGDG repository (for PostgreSQL/PostGIS)
+  when: install_postgis | default(false) | bool
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/usr/share/keyrings/postgresql.asc] http://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main"
+    state: present
+
+- name: Set PostgreSQL and PostGIS package names
+  when: install_postgis | default(false) | bool
+  ansible.builtin.set_fact:
+    pg_version: "{{ postgres_major_version | default('16') }}"
+    postgis_version: "{{ postgis_major_version | default('3') }}"
+
+- name: Install PostgreSQL with PostGIS
+  when: install_postgis | default(false) | bool
+  ansible.builtin.apt:
+    pkg:
+      - "postgresql-{{ pg_version }}"
+      - "postgresql-client-{{ pg_version }}"
+      - "postgresql-{{ pg_version }}-postgis-{{ postgis_version }}"
+      - postgis
+      - libpq-dev
+    update_cache: true
+
+- name: Ensure PostgreSQL service is enabled and started
+  when: install_postgis | default(false) | bool
+  ansible.builtin.service:
+    name: postgresql
+    state: started
+    enabled: true
