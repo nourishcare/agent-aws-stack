@@ -1,0 +1,100 @@
+---
+- name: Install dependencies for building Ruby
+  when: install_ruby | default(false) | bool
+  ansible.builtin.apt:
+    pkg:
+      - build-essential
+      - libssl-dev
+      - zlib1g-dev
+      - libreadline-dev
+      - libyaml-dev
+      - libxml2-dev
+      - libxslt1-dev
+      - libffi-dev
+      - git
+      - curl
+    update_cache: true
+
+- name: Clone rbenv (system-wide)
+  when: install_ruby | default(false) | bool
+  ansible.builtin.git:
+    repo: 'https://github.com/rbenv/rbenv.git'
+    dest: /usr/local/rbenv
+    version: master
+
+- name: Create plugins directory
+  when: install_ruby | default(false) | bool
+  ansible.builtin.file:
+    path: /usr/local/rbenv/plugins
+    state: directory
+    mode: '0755'
+
+- name: Install ruby-build plugin
+  when: install_ruby | default(false) | bool
+  ansible.builtin.git:
+    repo: 'https://github.com/rbenv/ruby-build.git'
+    dest: /usr/local/rbenv/plugins/ruby-build
+    version: master
+
+- name: Add rbenv to PATH and init for all users
+  when: install_ruby | default(false) | bool
+  ansible.builtin.copy:
+    dest: /etc/profile.d/rbenv.sh
+    mode: '0755'
+    content: |
+      export RBENV_ROOT=/usr/local/rbenv
+      export PATH="$RBENV_ROOT/bin:$RBENV_ROOT/shims:$PATH"
+      eval "$(rbenv init -)"
+
+- name: Install Ruby via rbenv and set global default
+  when: install_ruby | default(false) | bool
+  ansible.builtin.shell: |
+    set -euo pipefail
+    export RBENV_ROOT=/usr/local/rbenv
+    export PATH="$RBENV_ROOT/bin:$RBENV_ROOT/shims:$PATH"
+    eval "$(rbenv init -)"
+    rbenv install -s {{ ruby_version | default('3.3.7') }}
+    rbenv global {{ ruby_version | default('3.3.7') }}
+    rbenv rehash
+  args:
+    executable: /bin/bash
+
+- name: Install Bundler gem (latest)
+  when: install_ruby | default(false) | bool
+  ansible.builtin.shell: |
+    export RBENV_ROOT=/usr/local/rbenv
+    export PATH="$RBENV_ROOT/bin:$RBENV_ROOT/shims:$PATH"
+    eval "$(rbenv init -)"
+    gem install bundler
+    rbenv rehash
+  args:
+    executable: /bin/bash
+
+- name: Check Ruby and Bundler installation
+  when: install_ruby | default(false) | bool
+  ansible.builtin.shell: |
+    export RBENV_ROOT=/usr/local/rbenv
+    export PATH="$RBENV_ROOT/bin:$RBENV_ROOT/shims:$PATH"
+    eval "$(rbenv init -)"
+    ruby -v
+    bundler -v
+  register: ruby_version_check
+  changed_when: false
+
+- name: Display Ruby and Bundler versions
+  when: install_ruby | default(false) | bool
+  ansible.builtin.debug:
+    var: ruby_version_check.stdout_lines
+
+- name: Add rbenv to bashrc for container user
+  when: install_ruby | default(false) | bool
+  ansible.builtin.blockinfile:
+    path: "/home/{{ container_user }}/.bashrc"
+    create: yes
+    block: |
+      export RBENV_ROOT=/usr/local/rbenv
+      export PATH="$RBENV_ROOT/bin:$RBENV_ROOT/shims:$PATH"
+      eval "$(rbenv init -)"
+    owner: "{{ container_user }}"
+    group: "{{ container_user }}"
+    mode: '0644'
