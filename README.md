@@ -43,4 +43,5 @@ Examples:
 - Build with all components:
   make packer.build PACKER_OS=linux INSTALL_RUBY=true INSTALL_POSTGIS=true INSTALL_REDIS=true INSTALL_NODE=true
 
+[//]: # ( to debug:      PACKER_LOG=1 PACKER_LOG_PATH=packer.log make packer.build   )
 You can also pass these directly to Packer if not using the Makefile: install_ruby, install_postgis, install_redis, install_node, ruby_version, postgres_major_version, postgis_major_version, node_major_version.
