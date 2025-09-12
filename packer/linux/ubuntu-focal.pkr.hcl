@@ -146,4 +146,8 @@ build {
       "-e systemd_restart_seconds=${var.systemd_restart_seconds}",
     ]
   }
+  post-processor "manifest" {
+    output = "manifest.json"
+    strip_path = true
+  }
 }
