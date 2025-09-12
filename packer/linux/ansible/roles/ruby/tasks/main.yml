@@ -11,14 +11,11 @@
       - libxml2-dev
       - libxslt1-dev
       - libffi-dev
-      - git
-      - curl
       - autoconf
       - bison
       - libgdbm-dev
       - libncurses5-dev
       - libdb-dev
-      - unzip
     update_cache: true
 
 - name: Clone rbenv (system-wide)
