@@ -9,7 +9,7 @@
 - name: Add PGDG repository (for PostgreSQL/PostGIS)
   when: install_postgis | default(false) | bool
   ansible.builtin.apt_repository:
-    repo: "deb [signed-by=/usr/share/keyrings/postgresql.asc] http://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main"
+    repo: "deb [signed-by=/usr/share/keyrings/postgresql.asc] https://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main"
     state: present
 
 - name: Set PostgreSQL and PostGIS package names
