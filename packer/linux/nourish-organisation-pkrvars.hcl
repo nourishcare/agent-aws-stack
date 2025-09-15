@@ -1,0 +1,8 @@
+install_ruby = "true"
+install_postgis = "true"
+install_redis = "true"
+install_node = "true"
+ruby_version = "3.3.7"
+postgres_major_version = "16"
+postgis_major_version = "3"
+node_major_version = "20"

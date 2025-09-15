@@ -15,4 +15,8 @@
     - docker
     - users
     - agent
+    - node
+    - ruby
+    - redis
+#    - postgis
     - cleanup

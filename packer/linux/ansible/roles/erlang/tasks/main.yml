@@ -22,3 +22,4 @@
   ansible.builtin.apt:
     pkg:
       - erlang-base=1:24.3.4.17-1
+    update_cache: true

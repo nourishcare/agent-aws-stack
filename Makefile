@@ -6,6 +6,17 @@ AGENT_VERSION=v2.2.16
 TOOLBOX_VERSION=v1.20.5
 PACKER_OS=linux
 INSTALL_ERLANG=true
+INSTALL_RUBY=false
+INSTALL_POSTGIS=false
+INSTALL_REDIS=false
+INSTALL_NODE=false
+# Optional: provide a Packer var-file (e.g., packer/linux/nourish-organisation-pkrvars.hcl)
+PACKER_VAR_FILE?=
+# Defaults and versions
+RUBY_VERSION=3.3.7
+POSTGRES_VERSION=16
+POSTGIS_VERSION=3
+NODE_VERSION=20
 SYSTEMD_RESTART_SECONDS=1800
 VERSION=$(shell cat package.json | jq -r '.version')
 HASH=$(shell find Makefile packer/$(PACKER_OS) -type f -exec md5sum "{}" + | awk '{print $$1}' | sort | md5sum | awk '{print $$1}')
@@ -52,6 +63,7 @@ packer.validate.linux:
 	$(MAKE) venv.execute COMMAND='\
 		cd packer/linux && \
 		packer validate \
+			$(if $(PACKER_VAR_FILE),-var-file "$(PACKER_VAR_FILE)") \
 			-var "stack_version=v$(VERSION)" \
 			-var "agent_version=$(AGENT_VERSION)" \
 			-var "toolbox_version=$(TOOLBOX_VERSION)" \
@@ -59,8 +71,16 @@ packer.validate.linux:
 			-var "region=$(AWS_REGION)" \
 			-var "ami_prefix=$(AMI_PREFIX)" \
 			-var "arch=$(AMI_ARCH)" \
-			-var "install_erlang=$(INSTALL_ERLANG)" \
-			-var "systemd_restart_seconds=$(SYSTEMD_RESTART_SECONDS)" \
+			$(if $(PACKER_VAR_FILE),,-var "install_erlang=$(INSTALL_ERLANG)") \
+			$(if $(PACKER_VAR_FILE),,-var "install_ruby=$(INSTALL_RUBY)") \
+			$(if $(PACKER_VAR_FILE),,-var "install_postgis=$(INSTALL_POSTGIS)") \
+			$(if $(PACKER_VAR_FILE),,-var "install_redis=$(INSTALL_REDIS)") \
+			$(if $(PACKER_VAR_FILE),,-var "install_node=$(INSTALL_NODE)") \
+			$(if $(PACKER_VAR_FILE),,-var "ruby_version=$(RUBY_VERSION)") \
+			$(if $(PACKER_VAR_FILE),,-var "postgres_major_version=$(POSTGRES_VERSION)") \
+			$(if $(PACKER_VAR_FILE),,-var "postgis_major_version=$(POSTGIS_VERSION)") \
+			$(if $(PACKER_VAR_FILE),,-var "node_major_version=$(NODE_VERSION)") \
+			$(if $(PACKER_VAR_FILE),,-var "systemd_restart_seconds=$(SYSTEMD_RESTART_SECONDS)") \
 			-var "instance_type=$(AMI_INSTANCE_TYPE)" \
 			.'
 
@@ -109,6 +129,7 @@ packer.build.linux:
 	$(MAKE) venv.execute COMMAND='\
 		cd packer/linux && \
 		packer build \
+			$(if $(PACKER_VAR_FILE),-var-file "$(PACKER_VAR_FILE)") \
 			-var "stack_version=v$(VERSION)" \
 			-var "agent_version=$(AGENT_VERSION)" \
 			-var "toolbox_version=$(TOOLBOX_VERSION)" \
@@ -116,8 +137,16 @@ packer.build.linux:
 			-var "region=$(AWS_REGION)" \
 			-var "ami_prefix=$(AMI_PREFIX)" \
 			-var "arch=$(AMI_ARCH)" \
-			-var "install_erlang=$(INSTALL_ERLANG)" \
-			-var "systemd_restart_seconds=$(SYSTEMD_RESTART_SECONDS)" \
+			$(if $(PACKER_VAR_FILE),,-var "install_erlang=$(INSTALL_ERLANG)") \
+			$(if $(PACKER_VAR_FILE),,-var "install_ruby=$(INSTALL_RUBY)") \
+			$(if $(PACKER_VAR_FILE),,-var "install_postgis=$(INSTALL_POSTGIS)") \
+			$(if $(PACKER_VAR_FILE),,-var "install_redis=$(INSTALL_REDIS)") \
+			$(if $(PACKER_VAR_FILE),,-var "install_node=$(INSTALL_NODE)") \
+			$(if $(PACKER_VAR_FILE),,-var "ruby_version=$(RUBY_VERSION)") \
+			$(if $(PACKER_VAR_FILE),,-var "postgres_major_version=$(POSTGRES_VERSION)") \
+			$(if $(PACKER_VAR_FILE),,-var "postgis_major_version=$(POSTGIS_VERSION)") \
+			$(if $(PACKER_VAR_FILE),,-var "node_major_version=$(NODE_VERSION)") \
+			$(if $(PACKER_VAR_FILE),,-var "systemd_restart_seconds=$(SYSTEMD_RESTART_SECONDS)") \
 			-var "instance_type=$(AMI_INSTANCE_TYPE)" \
 			.'
 

@@ -1,0 +1,75 @@
+---
+- name: Add NodeSource GPG key
+  when: install_node | default(false) | bool
+  ansible.builtin.apt_key:
+    url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+    state: present
+
+- name: Add NodeSource repository for Node.js {{ node_major_version | default('20') }}
+  when: install_node | default(false) | bool
+  ansible.builtin.apt_repository:
+    repo: "deb https://deb.nodesource.com/node_{{ node_major_version | default('20') }}.x {{ ansible_distribution_release }} main"
+    update_cache: true
+    state: present
+
+- name: Install Node.js {{ node_major_version | default('20') }} and npm
+  when: install_node | default(false) | bool
+  ansible.builtin.apt:
+    pkg:
+      - nodejs
+    update_cache: true
+
+- name: Configure npm to use /usr/local for global installations
+  when: install_node | default(false) | bool
+  ansible.builtin.shell: |
+    npm config set prefix /usr/local
+  args:
+    executable: /bin/bash
+
+- name: Enable corepack (yarn/pnpm shims)
+  when: install_node | default(false) | bool
+  ansible.builtin.command: corepack enable
+  changed_when: false
+
+- name: Ensure /usr/local/bin and /usr/local/sbin are in PATH for all users
+  when: install_node | default(false) | bool
+  ansible.builtin.copy:
+    dest: /etc/profile.d/99-local-path.sh
+    mode: '0755'
+    content: |
+      case :$PATH: in
+        *:/usr/local/bin:*) ;;
+        *) export PATH="/usr/local/bin:$PATH" ;;
+      esac
+      case :$PATH: in
+        *:/usr/local/sbin:*) ;;
+        *) export PATH="/usr/local/sbin:$PATH" ;;
+      esac
+
+- name: Check Node.js and npm installation
+  when: install_node | default(false) | bool
+  ansible.builtin.shell: |
+    node -v
+    npm -v
+    which node
+    which npm
+  register: node_version_check
+  changed_when: false
+
+- name: Display Node.js and npm versions
+  when: install_node | default(false) | bool
+  ansible.builtin.debug:
+    var: node_version_check.stdout_lines
+
+- name: Add Node.js PATH to bashrc for container user
+  when: install_node | default(false) | bool
+  ansible.builtin.blockinfile:
+    path: "/home/{{ container_user }}/.bashrc"
+    create: yes
+    block: |
+      # Node.js path settings
+      export PATH="/usr/local/bin:$PATH"
+      export NODE_PATH="/usr/lib/node_modules"
+    owner: "{{ container_user }}"
+    group: "{{ container_user }}"
+    mode: '0644'

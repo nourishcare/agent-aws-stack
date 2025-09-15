@@ -30,3 +30,12 @@ aws s3api put-public-access-block \
 --bucket semaphore-cache \
 --public-access-block-configuration \
 BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true
+
+
+
+make packer.init
+make packer.build INSTALL_RUBY=true INSTALL_POSTGIS=true INSTALL_REDIS=true INSTALL_NODE=true
+## LOG AMI buid
+PACKER_LOG=1 PACKER_LOG_PATH=packer.log packer build
+# Not yet tested
+make packer.build -var-file nourish-organisation-pkrvars.hcl
